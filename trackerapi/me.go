@@ -6,23 +6,20 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	u "os/user"
 
 	"github.com/gesparza3/clirescue/cmdutil"
 	"github.com/gesparza3/clirescue/user"
 )
 
 var (
-	URL          string     = "https://www.pivotaltracker.com/services/v5/me"
-	FileLocation string     = homeDir() + "/.tracker"
-	currentUser  *user.User = user.New()
-	Stdout       *os.File   = os.Stdout
+	URL         string     = "https://www.pivotaltracker.com/services/v5/me"
+	currentUser *user.User = user.New()
+	Stdout      *os.File   = os.Stdout
 )
 
 func Me() {
 	setCredentials()
 	parse(makeRequest())
-	ioutil.WriteFile(FileLocation, []byte(currentUser.APIToken), 0644)
 }
 
 func makeRequest() []byte {
@@ -30,6 +27,9 @@ func makeRequest() []byte {
 	req, err := http.NewRequest("GET", URL, nil)
 	req.SetBasicAuth(currentUser.Username, currentUser.Password)
 	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Print(err)
+	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Print(err)
@@ -57,11 +57,6 @@ func setCredentials() {
 	var password = cmdutil.ReadLine()
 	currentUser.Login(username, password)
 	cmdutil.Unsilence()
-}
-
-func homeDir() string {
-	usr, _ := u.Current()
-	return usr.HomeDir
 }
 
 type MeResponse struct {
