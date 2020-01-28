@@ -65,6 +65,21 @@ Your first step might be to store the user token on the drive so next time the p
 
 As always, refer to the [Effective Go doc](http://golang.org/doc/effective_go.html) and [the go bootcamp book](http://www.golangbootcamp.com/book) if you have any questions.
 
+### Refactoring TODOs
+
+* `main.go`
+  * No refactoring needed
+* `me.go`
+  * Extract request handlers to a seperate service(Make request, parse, etc.)
+  * Utilize API tokens if saved from previous session(Check for credentials on
+    start)
+  * Extract structs to a seperate file
+  * Consider renaming `setCredentials` & `user.Login`; misleading names
+  * Current implmentation only supports one user...How would this change?
+    * We can assume there would only be one user and only save their creds
+    * Support multiple users(Would need to implement more robust persistence)
+* `cmdutil.go`
+  * 
 
 ### Existing refactors
 
